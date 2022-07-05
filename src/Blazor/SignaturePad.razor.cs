@@ -365,20 +365,23 @@ namespace Mobsites.Blazor
         /// </summary>
         internal async Task Update()
         {
-            var options = await this.GetState<SignaturePad, Options>();
-
-            // Use current state if...
-            if (this.initialized || options is null)
+            if (Index >= 0)
             {
-                options = this.GetOptions();
+                var options = await this.GetState<SignaturePad, Options>();
+
+                // Use current state if...
+                if (this.initialized || options is null)
+                {
+                    options = this.GetOptions();
+                }
+
+                await this.jsRuntime.InvokeVoidAsync(
+                    "Mobsites.Blazor.SignaturePads.update",
+                    Index,
+                    options);
+
+                await this.Save<SignaturePad, Options>(options);
             }
-
-            await this.jsRuntime.InvokeVoidAsync(
-                "Mobsites.Blazor.SignaturePads.update",
-                Index,
-                options);
-
-            await this.Save<SignaturePad, Options>(options);
         }
 
         /// <summary>
